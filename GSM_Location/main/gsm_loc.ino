@@ -20,14 +20,14 @@ typedef struct CellTower
     String mnc;
     long lac;
     long cellId;
-}CellTower;
+}CellTower_t;
 
 typedef struct Location
 {
     float lat;
     float lon;
     bool valid;
-}Location;
+}Location_t;
 
 /**********************************GLOBAL**********************************/
 
@@ -38,7 +38,7 @@ const char* api_key = "pk.ab2157ad0d5bc052b1dc25edb9ae896a";
 
 /*********************************FUNCTION*********************************/
 
-bool ParseCellTower(const String& line, CellTower& tower)
+bool ParseCellTower(const String& line, struct CellTower& tower)
 {
     // Split the string by commas
     char buffer[50];
@@ -70,9 +70,9 @@ bool ParseCellTower(const String& line, CellTower& tower)
 
 //**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**
 
-Location GetLocationFromCellTower(const CellTower& tower)
+struct Location GetLocationFromCellTower(const struct CellTower& tower)
 {
-    Location loc = {0.0, 0.0, false};
+    Location_t loc = {0.0, 0.0, false};
     String apiKey = "YOUR_OPENCELLID_API_KEY"; // Replace with your API key
     String url = "https://opencellid.org/cell/get?key=" + apiKey +
                  "&mcc=" + tower.mcc +
@@ -137,10 +137,10 @@ bool PrepGsmLocInfo()
     // Process each cell tower entry
     for (int i = 0; (i < lineCount) && (i < NE(gsmLocParamLines)); i++)
     {
-        CellTower tower;
+        CellTower_t tower;
         if (ParseCellTower(gsmLocParamLines[i], tower))
         {
-            Location loc = GetLocationFromCellTower(tower);
+            Location_t loc = GetLocationFromCellTower(tower);
             if (loc.valid)
             {
                 // Store raw data and coordinates
